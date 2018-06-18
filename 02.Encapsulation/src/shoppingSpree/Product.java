@@ -25,6 +25,13 @@ public class Product {
     }
 
     public void setCost(double cost) {
+        if (cost < 0) {
+            throw new IllegalArgumentException("Money cannot be negative");
+        }
         this.cost = cost;
+    }
+    @Override
+    public String toString() {
+        return this.getName();
     }
 }
