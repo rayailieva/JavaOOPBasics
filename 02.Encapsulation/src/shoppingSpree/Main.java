@@ -1,65 +1,62 @@
-package shoppingSpree;
+package exerciseOOP;
 
-import java.util.LinkedHashMap;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        Scanner scanner = new Scanner(System.in);
-
-        LinkedHashMap<String, Product> products = new LinkedHashMap<>();
-        LinkedHashMap<String, Person> people = new LinkedHashMap<>();
-
-        String[] allPeople = scanner.nextLine().split("[;]");
-
-        for(String p : allPeople){
-            String[] tokens = p.split("=");
-            String personName = tokens[0];
-            double money = Double.parseDouble(tokens[1]);
-
-            try{
-                Person person = new Person(personName, money);
-                people.put(personName, person);
-            }catch (IllegalArgumentException e){
-                System.out.println(e.getMessage());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        Map<String, Person> persons = new LinkedHashMap();
+        Map<String, Product> products = new LinkedHashMap();
+        String[] inputPersons = reader.readLine().split(";");
+        String[] inputProducts = reader.readLine().split(";");
+        try {
+            for (int i = 0; i < inputPersons.length; i++) {
+                Person person = new Person(inputPersons[i].split("=")[0], Double.parseDouble(inputPersons[i].split("=")[1]));
+                persons.put(person.getName(), person);
             }
-        }
-
-        String[] allProducts = scanner.nextLine().split("[;]");
-
-        for(String p : allProducts){
-            String[] tokens = p.split("=");
-            String productName = tokens[0];
-            double price = Double.parseDouble(tokens[1]);
-
-            try{
-                Product product = new Product(productName,price);
-                products.put(productName, product);
-            }catch (IllegalArgumentException e){
-                System.out.println(e.getMessage());
+            for (int i = 0; i < inputProducts.length; i++) {
+                Product product = new Product(inputProducts[i].split("=")[0], Double.parseDouble(inputProducts[i].split("=")[1]));
+                products.put(product.getName(), product);
             }
-        }
-
-        String input = scanner.nextLine();
-        while (!input.equals("END")){
-
-            String[] tokens = input.split(" ");
-            String personName = tokens[0];
-            String productName = tokens[1];
-
-            try{
-                people.get(personName).addToCart(products.get(productName));
-            }catch (IllegalArgumentException e){
-                System.out.println(e.getMessage());
+            String commands;
+            while (true) {
+                commands = reader.readLine();
+                if (commands.equals("END")) {
+                    break;
+                }
+                String nameOfPerson = commands.split("\\s+")[0];
+                String nameOfProduct = commands.split("\\s+")[1];
+                if (persons.containsKey(nameOfPerson) && products.containsKey(nameOfProduct)) {
+                    Person person = persons.get(nameOfPerson);
+                    Product product = products.get(nameOfProduct);
+                    if (person.hasEnoughMoney(product.getCost())) {
+                        person.buyProduct(product);
+                        System.out.println(String.format("%s bought %s", person.getName(), product.getName()));
+                    } else {
+                        System.out.println(String.format("%s can't afford %s", person.getName(), product.getName()));
+                    }
+                }
             }
-            input = scanner.nextLine();
+
+            for (Person person : persons.values()) {
+                if (person.getProductList().isEmpty()) {
+                    System.out.println(String.format("%s - Nothing bought", person.getName()));
+                } else {
+                    StringBuilder builder = new StringBuilder();
+                    builder.append(person.getProductList().get(0).getName());
+                    for (int i = 1; i < person.getProductList().size(); i++){
+                        builder.append(String.format(", %s", person.getProductList().get(i).getName()));
+                    }
+                    System.out.println(String.format("%s - %s", person.getName(), builder));
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
-
-        for (var p : people.entrySet()) {
-            System.out.println(p.getValue());
-        }
-
-
     }
 }
