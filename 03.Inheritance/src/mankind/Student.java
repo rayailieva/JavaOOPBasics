@@ -9,26 +9,13 @@ public class Student extends Human {
     }
 
     public String getFacultyNumber() {
-        return this.facultyNumber;
+        return facultyNumber;
     }
 
-    public void setFacultyNumber(String facultyNumber) {
+    private void setFacultyNumber(String facultyNumber) {
         if(facultyNumber.length() < 5 || facultyNumber.length() > 10){
             throw new IllegalArgumentException("Invalid faculty number!");
         }
         this.facultyNumber = facultyNumber;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("First Name: " + this.firstName);
-        sb.append(System.lineSeparator());
-        sb.append("Last Name: " + this.lastName);
-        sb.append(System.lineSeparator());
-        sb.append("Faculty number: " + this.facultyNumber);
-        sb.append(System.lineSeparator());
-
-        return sb.toString();
     }
 }
