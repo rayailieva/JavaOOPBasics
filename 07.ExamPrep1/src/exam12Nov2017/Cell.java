@@ -62,11 +62,6 @@ public abstract class Cell {
 
     @Override
     public String toString() {
-        return "Cell{" +
-                "id='" + id + '\'' +
-                ", health=" + health +
-                ", positionRow=" + positionRow +
-                ", positionCol=" + positionCol +
-                '}';
+        return "";
     }
 }
