@@ -34,7 +34,7 @@ public class Main {
                     manager.participate(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
                     break;
                 case "start":
-                    manager.start(Integer.parseInt(tokens[1]));
+                    System.out.println(manager.start(Integer.parseInt(tokens[1])));
                     break;
                 case "park":
                     manager.park(Integer.parseInt(tokens[1]));

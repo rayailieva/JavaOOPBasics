@@ -45,7 +45,10 @@ public class CarManager {
     }
 
     public String check(int id) {
-        return this.cars.get(id).toString();
+        if(this.cars.containsKey(id)) {
+            return this.cars.get(id).toString();
+        }
+        return "";
     }
 
     public void open(int id, String type, int length, String route, int prizePool) {
@@ -68,41 +71,48 @@ public class CarManager {
     }
 
     public void participate(int carId, int raceId) {
-        Car car = this.cars.get(carId);
-        if (this.garage.hasCar(car)) {
-            return;
+        if(this.cars.containsKey(carId) && this.races.containsKey(raceId)) {
+            Car car = this.cars.get(carId);
+            if (this.garage.hasCar(car)) {
+                return;
+            }
+            Race race = this.races.get(raceId);
+            race.addParticipant(car);
         }
-
-        Race race = this.races.get(raceId);
-
-        race.addParticipant(car);
     }
 
     public String start(int id) {
-        Race race = this.races.get(id);
+        if(this.races.containsKey(id)) {
+            Race race = this.races.get(id);
 
-        if (!race.hasParticipants()) {
-            return "Cannot start the race with zero participants.";
+            if (!race.hasParticipants()) {
+                return "Cannot start the race with zero participants.";
+            }
+
+            String raceResult = race.toString();
+            this.races.remove(id);
+            return raceResult;
         }
-
-        String raceResult = race.toString();
-        this.races.remove(id);
-        return raceResult;
+        return "";
     }
 
     public void park(int id) {
-        Car car = this.cars.get(id);
+        if(this.cars.containsKey(id)) {
+            Car car = this.cars.get(id);
 
-        if (this.races.values().stream().anyMatch(race -> race.hasCar(car))) {
-            return;
+            if (this.races.values().stream().anyMatch(race -> race.hasCar(car))) {
+                return;
+            }
+
+            this.garage.addInGarage(car);
         }
-
-        this.garage.addInGarage(car);
     }
 
     public void unpark(int id) {
-        Car car = this.cars.get(id);
-        this.garage.removeFromGarage(car);
+        if(this.cars.containsKey(id)) {
+            Car car = this.cars.get(id);
+            this.garage.removeFromGarage(car);
+        }
     }
 
     public void tune(int tuneIndex, String addOn) {
